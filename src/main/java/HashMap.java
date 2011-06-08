@@ -30,14 +30,6 @@ public class HashMap {
         return index;
     }
 
-    int indexFor(Hashable key) {
-        return key.hash() % entries.length;
-    }
-
-    private void updateValueAt(int index, String value) {
-        entries[index].value = value;
-    }
-
     private void addEntryAt(int index, Entry entry) {
         entries[index] = entry;
         size++;
@@ -62,8 +54,16 @@ public class HashMap {
         return entryExistsAt(index) && !keyAt(index).equals(key);
     }
 
+    private void updateValueAt(int index, String value) {
+        entries[index].value = value;
+    }
+
     private int nextIndexAfterCollisionAt(int index) {
         return (index + 1) % entries.length;
+    }
+
+    int indexFor(Hashable key) {
+        return key.hash() % entries.length;
     }
 
     private Hashable keyAt(int index) {
