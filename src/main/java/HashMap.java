@@ -51,14 +51,11 @@ public class HashMap {
     }
 
     private void resize() {
-        size = 0;
-        Entry[] old = entries;
-        entries = new Entry[entries.length * 2];
-        for (Entry entry : old) {
-            int index = collisionResolvedIndexFor(entry.key);
-            entries[index] = entry;
-            size++;
+        Entry[] replacement = new Entry[entries.length * 2];
+        for (Entry entry : entries) {
+            replacement[collisionResolvedIndexFor(entry.key)] = entry;
         }
+        entries = replacement;
     }
 
     private boolean entryExistsAtIndexWithDifferent(Hashable key, int index) {
