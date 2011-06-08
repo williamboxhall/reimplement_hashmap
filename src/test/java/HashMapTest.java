@@ -24,7 +24,7 @@ public class HashMapTest {
     @Before
     public void setUp() {
         when(key1.hash()).thenReturn(HASH_1);
-        when(key1.hash()).thenReturn(HASH_2);
+        when(key2.hash()).thenReturn(HASH_2);
     }
 
     @Test
@@ -68,7 +68,6 @@ public class HashMapTest {
 
         hashMap.put(key1, VALUE_2);
         assertThat(hashMap.get(key1), is(VALUE_2));
-
     }
 
     @Test
@@ -87,10 +86,33 @@ public class HashMapTest {
 
     @Test
     public void canResolveHashCollisions() {
+        HashMap hashMap = new HashMap();
+
         when(key1.hash()).thenReturn(HASH_1);
         when(key2.hash()).thenReturn(HASH_1);
 
-        HashMap hashMap = new HashMap();
+        hashMap.put(key1, VALUE_1);
+        hashMap.put(key2, VALUE_2);
+        assertThat(hashMap.get(key2), is(VALUE_2));
+        assertThat(hashMap.get(key1), is(VALUE_1));
+    }
+
+    @Test
+    public void canResolveCollisionsWithoutOverflowingUnderlyingArray() {
+        when(key1.hash()).thenReturn(HASH_1);
+        when(key2.hash()).thenReturn(HASH_1);
+
+        HashMap hashMap = new HashMap(HASH_1 + 1);
+        assertThat(hashMap.collisionResolvedIndexFor(key1), is(HASH_1));
+        hashMap.put(key1, VALUE_1);
+        assertThat(hashMap.collisionResolvedIndexFor(key1), is(HASH_1));
+        assertThat(hashMap.collisionResolvedIndexFor(key2), is(0));
+        hashMap.put(key2, VALUE_2);
+    }
+
+    @Test
+    public void resizesUnderlyingArrayWhenItGetsFull() {
+        HashMap hashMap = new HashMap(1);
         hashMap.put(key1, VALUE_1);
         hashMap.put(key2, VALUE_2);
         assertThat(hashMap.get(key2), is(VALUE_2));
