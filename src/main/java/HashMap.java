@@ -18,8 +18,9 @@ public class HashMap {
         int index = collisionResolvedIndexFor(key);
         if (entryExistsAt(index)) {
             updateValueAt(index, value);
+        } else {
+            addEntryAt(index, createEntryFor(key, value));
         }
-        addEntryAt(index, createEntryFor(key, value));
     }
 
     int collisionResolvedIndexFor(Hashable key) {
